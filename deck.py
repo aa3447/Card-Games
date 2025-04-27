@@ -24,10 +24,10 @@ class Ranks(Enum):
     KING = 13
 
 class Deck:
-    def __init__(self):
+    def __init__(self, custom_ranks = Ranks):
         self.cards = []
         for suit in Suits:
-            for rank in Ranks:
+            for rank in custom_ranks:
                 self.cards.append(Card(suit, rank))
 
     def deal(self):

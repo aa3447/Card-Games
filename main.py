@@ -1,10 +1,9 @@
 from deck import Deck
+from war import War
 
 def main():
-    deck = Deck()
-    deck.shuffle()
-    card = deck.deal()
-    print(f"Card dealt: {card.rank.name} of {card.suit.name}")
+    war = War()
+    print(war.play(war_face_down_cards = 3))
 
 if __name__ == "__main__":
     main()
