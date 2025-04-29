@@ -32,10 +32,10 @@ class Deck:
 
     def deal(self):
         if len(self.cards) == 0:
-            print("No cards left in the deck.")
             return None
         return self.cards.pop()
     
     def shuffle(self):
         shuffle(self.cards)
-        print("Deck shuffled")
+        
+        
