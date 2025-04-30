@@ -19,10 +19,10 @@ class Ranks(Enum):
 
 class War:
     def __init__(self):
-        self.deck = Deck(custom_ranks=Ranks)
-        self.deck.shuffle()
-        self.tie_stack = []
-        self.round_count = 0
+        self._deck = Deck(custom_ranks=Ranks)
+        self._deck.shuffle()
+        self._tie_stack = []
+        self._round_count = 0
         
     # This function plays the game of War
     # war_face_down_cards is the number of cards to play face down in a tie
@@ -46,11 +46,11 @@ class War:
         player1, player2 = self._set_player_names(player_amount)
         
         for _ in range(26):
-            player1.list.append(self.deck.deal())
-            player2.list.append(self.deck.deal())
+            player1.list.append(self._deck.deal())
+            player2.list.append(self._deck.deal())
             
         while player1.get_list_size() > 0 and player2.get_list_size() > 0:
-            self.round_count += 1
+            self._round_count += 1
             if user_input:
                 match player_amount:
                     case 1:
@@ -72,23 +72,23 @@ class War:
             
             else:
                 if player1.get_list_size() <= war_face_down_cards:
-                    return f"{player1.name} dose not have enough cards for WAR! {player2.name} wins the game after {self.round_count} rounds!!"
+                    return f"{player1.name} dose not have enough cards for WAR! {player2.name} wins the game after {self._round_count} rounds!!"
                 elif player2.get_list_size() <= war_face_down_cards:
-                    return f"{player2.name} dose not have enough cards for WAR! {player1.name} wins the game after {self.round_count} rounds!!"
+                    return f"{player2.name} dose not have enough cards for WAR! {player1.name} wins the game after {self._round_count} rounds!!"
                 
                 if see_text:
                     print("It's a tie! WAR!")
-                self.tie_stack.append(card1)
-                self.tie_stack.append(card2)
+                self._tie_stack.append(card1)
+                self._tie_stack.append(card2)
                 
                 for _ in range(war_face_down_cards):
-                    self.tie_stack.append(player1.list.pop())
-                    self.tie_stack.append(player2.list.pop())
+                    self._tie_stack.append(player1.list.pop())
+                    self._tie_stack.append(player2.list.pop())
         
         if player1.get_list_size == 0:
-            return f"{player1.name} is out of cards! {player2.name} wins the game after {self.round_count} rounds!"
+            return f"{player1.name} is out of cards! {player2.name} wins the game after {self._round_count} rounds!"
         else:
-            return f"{player2.name} is out of cards! {player1.name} wins the game after {self.round_count} rounds!"
+            return f"{player2.name} is out of cards! {player1.name} wins the game after {self._round_count} rounds!"
         
     # This function sets the player names based on the number of players
     # 0 is 2 computer players
@@ -124,7 +124,7 @@ class War:
             player_input = input(f"play next card {player.name}? (press enter to continue. type 'exit' or 'e' to quit) ")
         
             if player_input.lower() == "exit" or player_input.lower() == "e":
-                 print(f"{player.name} quit the game after {self.round_count} rounds!")
+                 print(f"{player.name} quit the game after {self._round_count} rounds!")
                  quit()
                         
         card = player.list.pop()
@@ -142,12 +142,12 @@ class War:
         player.list.insert(0, card1)
         player.list.insert(0, card2)
         
-        if len(self.tie_stack) > 0:
+        if len(self._tie_stack) > 0:
             if see_text:
-                print(f"and {player.name} wins the WAR! The stack of {len(self.tie_stack)} cards is yours!!")
-            for card in self.tie_stack:
+                print(f"and {player.name} wins the WAR! The stack of {len(self._tie_stack)} cards is yours!!")
+            for card in self._tie_stack:
                 player.list.insert(0, card)
-            self.tie_stack.clear()
+            self._tie_stack.clear()
 
                         
     

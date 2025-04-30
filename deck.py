@@ -35,6 +35,14 @@ class Deck:
             return None
         return self.cards.pop()
     
+    def multi_deal(self, num_cards):
+        cards = []
+        if len(self.cards) < num_cards:
+            return None
+        for _ in range(num_cards):
+            cards.append(self.cards.pop())
+        return cards
+    
     def shuffle(self):
         shuffle(self.cards)
         
