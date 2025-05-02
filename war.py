@@ -34,7 +34,7 @@ class War:
             while True:
                 try:
                     player_amount = int(input("Enter the number of players (1-2): "))
-                except ValueError:
+                except TypeError:
                     print("Invalid input. Please enter a number.")
                 else:
                     if  player_amount < 1 or player_amount > 2:
@@ -86,9 +86,9 @@ class War:
                     self._tie_stack.append(player2.list.pop())
         
         if player1.get_list_size == 0:
-            return f"{player1.name} is out of cards! {player2.name} wins the game after {self._round_count} rounds!"
+            print(f"{player1.name} is out of cards! {player2.name} wins the game after {self._round_count} rounds!")
         else:
-            return f"{player2.name} is out of cards! {player1.name} wins the game after {self._round_count} rounds!"
+            print(f"{player2.name} is out of cards! {player1.name} wins the game after {self._round_count} rounds!")
         
     # This function sets the player names based on the number of players
     # 0 is 2 computer players

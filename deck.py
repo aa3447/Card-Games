@@ -45,5 +45,14 @@ class Deck:
     
     def shuffle(self):
         shuffle(self.cards)
+    
+    def refill(self):
+        self.cards = []
+        for suit in Suits:
+            for rank in Ranks:
+                self.cards.append(Card(suit, rank))
+
+    def get_cards_remaining(self):
+        return len(self.cards)
         
         

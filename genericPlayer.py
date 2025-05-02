@@ -4,9 +4,14 @@ class Player:
         self.list = []
         self._chips = 0
         self._bet = 0
+        self._has_busted = False
 
     def add_card(self, card):
         self.list.append(card)
+
+    def add_cards(self, cards):
+        for card in cards:
+            self.list.append(card)
 
     def remove_card(self):
         return self.list.pop()
@@ -23,8 +28,25 @@ class Player:
     def get_chips(self):
         return self._chips
     
-    def show_cards(self):
+    def set_bet(self, bet):
+        if bet > self._chips:
+            raise ValueError("Bet exceeds available chips.")
+        self._bet = bet
+    
+    def get_bet(self):
+        return self._bet
+    
+    def get_cards(self):
+        return self.list
+    
+    def set_busted(self, busted):
+        self._has_busted = busted
+    
+    def has_busted(self):
+        return self._has_busted
+    
+    def print_hand(self):
         hand = ""
         for card in self.list:
             hand += f"{card}, "
-        print(hand)
+        return hand
