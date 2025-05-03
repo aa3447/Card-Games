@@ -18,19 +18,22 @@ class Ranks(Enum):
     ACE = 14
 
 class War:
-    def __init__(self):
+    def __init__(self, war_face_down_cards = 1, see_text = True, user_input = False):
         self._deck = Deck(custom_ranks=Ranks)
         self._deck.shuffle()
         self._tie_stack = []
         self._round_count = 0
+        self._war_face_down_cards = war_face_down_cards
+        self._see_text = see_text
+        self._user_input = user_input
         
     # This function plays the game of War
     # war_face_down_cards is the number of cards to play face down in a tie
     # see_text is a boolean that determines if the game should print the text
     # user_input is a boolean that determines if the game should ask for user input i.e a CPU vs CPU game
-    def play(self, war_face_down_cards = 1, see_text = True, user_input = False):
+    def play(self):
         player_amount = 0
-        if user_input:
+        if self._user_input:
             while True:
                 try:
                     player_amount = int(input("Enter the number of players (1-2): "))
@@ -51,37 +54,37 @@ class War:
             
         while player1.get_list_size() > 0 and player2.get_list_size() > 0:
             self._round_count += 1
-            if user_input:
+            if self._user_input:
                 match player_amount:
                     case 1:
-                        card1 = self._play_card(see_text,player1)
-                        card2 = self._play_card(see_text,player2, user = False)
+                        card1 = self._play_card(self._see_text,player1)
+                        card2 = self._play_card(self._see_text,player2, user = False)
                     
                     case 2:
-                        card1 = self._play_card(see_text,player1)
-                        card2 = self._play_card(see_text,player2)
+                        card1 = self._play_card(self._see_text,player1)
+                        card2 = self._play_card(self._see_text,player2)
             else:
-                card1 = self._play_card(see_text,player1, user = False)
-                card2 = self._play_card(see_text,player2, user = False)
+                card1 = self._play_card(self._see_text,player1, user = False)
+                card2 = self._play_card(self._see_text,player2, user = False)
 
             if card1.get_rank().value > card2.get_rank().value:
-                self._player_wins_stack(see_text, player1, card1, card2)
+                self._player_wins_stack(self._see_text, player1, card1, card2)
             
             elif card1.get_rank().value < card2.get_rank().value:
-                self._player_wins_stack(see_text, player2, card1, card2)
+                self._player_wins_stack(self._see_text, player2, card1, card2)
             
             else:
-                if player1.get_list_size() <= war_face_down_cards:
+                if player1.get_list_size() <= self._war_face_down_cards:
                     return f"{player1.name} dose not have enough cards for WAR! {player2.name} wins the game after {self._round_count} rounds!!"
-                elif player2.get_list_size() <= war_face_down_cards:
+                elif player2.get_list_size() <= self._war_face_down_cards:
                     return f"{player2.name} dose not have enough cards for WAR! {player1.name} wins the game after {self._round_count} rounds!!"
                 
-                if see_text:
+                if self._see_text:
                     print("It's a tie! WAR!")
                 self._tie_stack.append(card1)
                 self._tie_stack.append(card2)
                 
-                for _ in range(war_face_down_cards):
+                for _ in range(self._war_face_down_cards):
                     self._tie_stack.append(player1.list.pop())
                     self._tie_stack.append(player2.list.pop())
         

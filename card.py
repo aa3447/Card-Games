@@ -22,4 +22,7 @@ class Card:
         return False
     
     def __str__(self):
-        return f"{self.rank} of {self.suit}"
+        return f"{self.rank.name} of {self.suit.name}"
+    
+    def __repr__(self):
+        return f"Card({self.suit}, {self.rank})"

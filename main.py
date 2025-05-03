@@ -1,12 +1,8 @@
-from deck import Deck
-from war import War
-from blackjack import BlackJack
+from gameSelector import GameSelector
 
 def main():
-    war = War()
-    blackjack = BlackJack()
-    #print(war.play(war_face_down_cards = 3, user_input=True))
-    blackjack.play()
+   game = GameSelector().select_game()
+   game.play()
 
 if __name__ == "__main__":
     main()

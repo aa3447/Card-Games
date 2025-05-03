@@ -4,14 +4,17 @@ from math import floor
 
 
 class BlackJack:
-    def __init__(self):
+    def __init__(self, max_bet = 50, starting_chips = 100, dealer_hits_soft_17 = False):
         self._deck = Deck()
         self._deck.shuffle()
+        self._max_bet = max_bet
+        self._starting_chips = starting_chips
         self._dealer_blackjack = False
         self._player_blackjack = False
         self._dealer_bust = False
+        self._dealer_hits_soft_17 = dealer_hits_soft_17
         
-    def play(self, dealer_hits_soft_17 = False):
+    def play(self):
         # PreGame setup
         player_amount = 0
         while True:
@@ -24,34 +27,28 @@ class BlackJack:
                     print("Invalid input. Please enter a number between 1 and 2.")
                 else:
                     break
-        players = self._setup_players(player_amount)
+        players = self._setup_players(player_amount,self._starting_chips)
         dealer = players.pop()
+        
         # Game loop
         while True:
+
+            player_input = input(f"Do you want to quit? (press enter to continue. type 'exit' or 'e' to quit) ")
+        
+            if player_input.lower() == "exit" or player_input.lower() == "e":
+                 print(f"{player.name} has quit the game.")
+                 quit()
+
             # Resetting game state
-            self._dealer_blackjack = False
-            self._player_blackjack = False
-            self._dealer_bust = False
+            self._reset(players, dealer)
+            
             if self._deck.get_cards_remaining() < 20:
                 print("Deck is running low. Refilling deck.")
                 self._deck.refill()
                 self._deck.shuffle()
 
             # Placing bets
-            for x in range(player_amount):
-                while True:
-                    print(f"{players[x].name} has {players[x].get_chips()} chips.")
-                    try:
-                        players[x].set_bet(int(input(f"{players[x].name} place your bet (1-50):")))
-                    except TypeError:
-                        print("Invalid input. Please enter a number.")
-                    except ValueError as v:
-                        print(v)
-                    else:
-                        if  players[x].get_bet() < 1 or players[x].get_bet() > 50:
-                            print("Invalid input. Please enter a number between 1 and 50.")
-                        else:
-                            break
+            self._place_bets(players, player_amount, self._max_bet)
             
             # Dealing initial cards
             print("Dealing intial cards")
@@ -121,6 +118,7 @@ class BlackJack:
                                             print("Game over! All players are out of chips!")
                                             return
                                     player.set_busted(True)
+                                    break
                             
                             elif action == 's':
                                 break
@@ -138,16 +136,17 @@ class BlackJack:
                     print(f"Dealer's hand is {dealer.print_hand()}")
                     dealer_score = self._score_hand(dealer)
                     while dealer_score[0] < 17:
-                        dealer_score[0] = self._score_hand(dealer)[0]
                         dealer.add_card(self._deck.deal())
                         print(f"{dealer.name} hits and gets {dealer.get_cards()[-1]}")
-                    if dealer_score[0] == 17 and dealer_hits_soft_17 and dealer_score[1] > 0:
+                        dealer_score[0] = self._score_hand(dealer)[0]
+                    
+                    if self._dealer_hits_soft_17 and dealer_score[0] == 17 and dealer_score[1] > 0 and dealer.get_list_size() == 2:
                         dealer.add_card(self._deck.deal())
                         print(f"{dealer.name} hits and gets {dealer.get_cards()[-1]}")
                         dealer_score = self._score_hand(dealer)[0]    
                     
                     if dealer_score[0] > 21:
-                        print(f"{dealer.name} busts! {dealer.name} wins!")
+                        print(f"{dealer.name} busts! Players win!")
                         for player in players:
                             player.set_chips(player.get_chips() + player.get_bet())
                             print(f"{player.name} has {player.get_chips()} chips left.")
@@ -172,7 +171,7 @@ class BlackJack:
     
     # This function sets up the players for the game.
     # It returns a list of Player objects with the Dealer being the last player
-    def _setup_players(self, player_amount, chips = 100):
+    def _setup_players(self, player_amount, chips):
         players = []
         match player_amount:
                 case 1:
@@ -217,6 +216,34 @@ class BlackJack:
                 score += 11
         
         return [score , ace_count]
+
+    def _reset(self, players, dealer):
+        self._dealer_blackjack = False
+        self._player_blackjack = False
+        self._dealer_bust = False
+        for player in players:
+            player.list = []
+            player.set_bet(0)
+            player.set_busted(False)
+        dealer.list = []
+
+    def _place_bets(self, players, player_amount, max_bet):
+        for x in range(player_amount):
+            while True:
+                print(f"{players[x].name} has {players[x].get_chips()} chips.")
+                try:
+                    players[x].set_bet(int(input(f"{players[x].name} place your bet (1-{max_bet}):")))
+                except TypeError:
+                    print("Invalid input. Please enter a number.")
+                except ValueError as v:
+                    print(v)
+                else:
+                    if players[x].get_bet() < 1 or players[x].get_bet() > max_bet:
+                        print("Invalid input. Please enter a number between 1 and 50.")
+                    elif players[x].get_bet() > players[x].get_chips():
+                        print("Invalid input. Bet exceeds available chips.")
+                    else:
+                        break
 
     def _set_ace_value(self, ace, value):
         ace.set_value(value)
