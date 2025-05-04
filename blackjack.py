@@ -48,7 +48,22 @@ class BlackJack:
                 self._deck.shuffle()
 
             # Placing bets
-            self._place_bets(players, player_amount, self._max_bet)
+            for x in range(player_amount):
+                while True:
+                    print(f"{players[x].name} has {players[x].get_chips()} chips.")
+                    try:
+                        players[x].set_bet(int(input(f"{players[x].name} place your bet (1-{self._max_bet}):")))
+                    except TypeError:
+                        print("Invalid input. Please enter a number.")
+                    except ValueError as v:
+                        print(v)
+                    else:
+                        if players[x].get_bet() < 1 or players[x].get_bet() > self._max_bet:
+                            print("Invalid input. Please enter a number between 1 and 50.")
+                        elif players[x].get_bet() > players[x].get_chips():
+                            print("Invalid input. Bet exceeds available chips.")
+                        else:
+                            break
             
             # Dealing initial cards
             print("Dealing intial cards")
@@ -94,13 +109,17 @@ class BlackJack:
 
                     # Player's turn
                     for player in players:
+                        turn_count = 0
                         while True:
                             print(f"{player.name}'s hand is {player.print_hand()}")
                             try:
-                                action = input(f"{player.name}, do you want to hit (h), stand (s), or show dealers hand (d)?").lower()
+                                if turn_count == 0:
+                                    action = input(f"{player.name}, do you want to hit (h), stand (s), double down (d), surrender (g), or show dealers hand (t)?").lower()
+                                else:
+                                    action = input(f"{player.name}, do you want to hit (h), stand (s), or show dealers hand (t)?").lower()
                             except TypeError:
                                 print("Invalid input. Please enter 'h' or 's'.")
-                            
+                            turn_count += 1
                             if action == 'h':
                                 player.add_card(self._deck.deal())
                                 print(f"{player.name} hits and gets {player.get_cards()[-1]}")
@@ -123,11 +142,40 @@ class BlackJack:
                             elif action == 's':
                                 break
                             
-                            elif action == 'd':
+                            elif action == 't':
                                 print(f"Dealer's hand is {dealer.print_hand()}")
-                            
+                            elif turn_count == 1:
+                                if action == 'd':
+                                    if player.get_chips() < player.get_bet() * 2:
+                                        print("Invalid input. Bet exceeds available chips.")
+                                    else:
+                                        player.set_bet(player.get_bet() * 2)
+                                        player.add_card(self._deck.deal())
+                                        print(f"{player.name} hits and gets {player.get_cards()[-1]}")
+                                        if self._score_hand(player)[0] > 21:
+                                            print(f"{player.name} busts! {dealer.name} wins!")
+                                            player.set_chips(player.get_chips() - player.get_bet())
+                                            if player.get_chips() <= 0:
+                                                print(f"{player.name} is out of chips!")
+                                                players.remove(player)
+                                                player_amount -= 1
+                                                
+                                                if player_amount == 0:
+                                                    print("Game over! All players are out of chips!")
+                                                    return
+                                            player.set_busted(True)
+                                            break
+                                    break
+                                elif action == 'g':
+                                    if player.get_chips() < player.get_bet() // 2:
+                                        print("Invalid input. Bet exceeds available chips.")
+                                    else:
+                                        player.set_bet(player.get_bet() // 2)
+                                        player.set_chips(player.get_chips() - player.get_bet())
+                                        print(f"{player.name} surrenders and loses half of their bet.")
+                                        break
                             else:
-                                print("Invalid input. Please enter 'h' or 's'.")
+                                print("Invalid input.")
                     
 
                     # Dealer's turn
@@ -150,10 +198,11 @@ class BlackJack:
                         for player in players:
                             player.set_chips(player.get_chips() + player.get_bet())
                             print(f"{player.name} has {player.get_chips()} chips left.")
-                        self._dealer_bust = True
+                        self._dealer_bust = True  
                     
                     # Determining winner
                     if not self._dealer_bust:
+                        dealer_score = self._score_hand(dealer)
                         for x in range(player_amount):
                             currrent_player = players[x]
                             player_score = self._score_hand(currrent_player)[0]
@@ -226,24 +275,6 @@ class BlackJack:
             player.set_bet(0)
             player.set_busted(False)
         dealer.list = []
-
-    def _place_bets(self, players, player_amount, max_bet):
-        for x in range(player_amount):
-            while True:
-                print(f"{players[x].name} has {players[x].get_chips()} chips.")
-                try:
-                    players[x].set_bet(int(input(f"{players[x].name} place your bet (1-{max_bet}):")))
-                except TypeError:
-                    print("Invalid input. Please enter a number.")
-                except ValueError as v:
-                    print(v)
-                else:
-                    if players[x].get_bet() < 1 or players[x].get_bet() > max_bet:
-                        print("Invalid input. Please enter a number between 1 and 50.")
-                    elif players[x].get_bet() > players[x].get_chips():
-                        print("Invalid input. Bet exceeds available chips.")
-                    else:
-                        break
 
     def _set_ace_value(self, ace, value):
         ace.set_value(value)
