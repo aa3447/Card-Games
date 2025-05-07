@@ -88,7 +88,7 @@ class War:
                     self._tie_stack.append(player1.list.pop())
                     self._tie_stack.append(player2.list.pop())
         
-        if player1.get_list_size == 0:
+        if player1.get_list_size() == 0:
             print(f"{player1.name} is out of cards! {player2.name} wins the game after {self._round_count} rounds!")
         else:
             print(f"{player2.name} is out of cards! {player1.name} wins the game after {self._round_count} rounds!")

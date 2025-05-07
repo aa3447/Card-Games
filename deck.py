@@ -54,5 +54,8 @@ class Deck:
 
     def get_cards_remaining(self):
         return len(self.cards)
+    
+    def is_empty(self):
+        return len(self.cards) == 0
         
         

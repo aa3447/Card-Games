@@ -1,8 +1,19 @@
+from enum import Enum
+
+class Colors(Enum):
+    RED = 1
+    BLACK = 2
+
 class Card:
     def __init__(self,suit, rank):
         self.suit = suit
         self.rank = rank
+        if suit == "Hearts" or suit == "Diamonds":
+            self.color = Colors.RED
+        else:
+            self.color = Colors.BLACK
         self._value = rank
+        self._is_flipped = False
     
     def get_suit(self):
         return self.suit
@@ -13,8 +24,17 @@ class Card:
     def get_value(self):
         return self._value
     
+    def get_color(self):
+        return self.color
+    
     def set_value(self, value):
         self._value = value
+
+    def flip(self):
+        self._is_flipped = not self._is_flipped
+    
+    def is_flipped(self):
+        return self._is_flipped
     
     def __eq__(self, other):
         if isinstance(other, Card):
