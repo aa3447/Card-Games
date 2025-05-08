@@ -4,16 +4,37 @@ class Colors(Enum):
     RED = 1
     BLACK = 2
 
+class Suits(Enum):
+    HEARTS = 1
+    DIAMONDS = 2
+    CLUBS = 3
+    SPADES = 4
+
+class Ranks(Enum):
+    ACE = 1
+    TWO = 2
+    THREE = 3
+    FOUR = 4
+    FIVE = 5
+    SIX = 6
+    SEVEN = 7
+    EIGHT = 8
+    NINE = 9
+    TEN = 10
+    JACK = 11
+    QUEEN = 12
+    KING = 13
+
 class Card:
     def __init__(self,suit, rank):
         self.suit = suit
         self.rank = rank
-        if suit == "Hearts" or suit == "Diamonds":
+        if self.suit == Suits.HEARTS or self.suit == Suits.DIAMONDS:
             self.color = Colors.RED
         else:
             self.color = Colors.BLACK
         self._value = rank
-        self._is_flipped = False
+        self._is_flipped: bool = False
     
     def get_suit(self):
         return self.suit
@@ -33,7 +54,7 @@ class Card:
     def flip(self):
         self._is_flipped = not self._is_flipped
     
-    def is_flipped(self):
+    def is_flipped(self) -> bool:
         return self._is_flipped
     
     def __eq__(self, other):

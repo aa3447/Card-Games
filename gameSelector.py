@@ -1,11 +1,13 @@
 from war import War
 from blackjack import BlackJack
+from solitaire import Solitaire
 
 class GameSelector:
     def __init__(self):
         self._games = {
             "War": War,
-            "Blackjack": BlackJack
+            "Blackjack": BlackJack,
+            "Solitaire": Solitaire
         }
 
     def select_game(self):
@@ -121,6 +123,9 @@ class GameSelector:
                     dealer_hits_soft_17_bool = False
 
                 return BlackJack(max_bet = max_bet_setup ,starting_chips = starting_chips_setup, dealer_hits_soft_17 = dealer_hits_soft_17_bool)
+            
+            case "Solitaire":
+                return Solitaire()
             
             case _:
                 raise ValueError("Invalid game name")

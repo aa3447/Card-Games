@@ -1,3 +1,5 @@
+from card import Card
+
 class Player:
     def __init__(self, name = "player"):
         self.name = name
@@ -13,19 +15,19 @@ class Player:
         for card in cards:
             self.list.append(card)
 
-    def remove_card(self):
+    def remove_card(self) -> Card:
         return self.list.pop()
 
-    def has_cards(self):
+    def has_cards(self) -> bool:
         return len(self.list) > 0
 
-    def get_list_size(self):
+    def get_list_size(self) -> int:
         return len(self.list)
     
     def set_chips(self, chips):
         self._chips = chips
 
-    def get_chips(self):
+    def get_chips(self) -> int:
         return self._chips
     
     def set_bet(self, bet):
@@ -42,10 +44,10 @@ class Player:
     def set_busted(self, busted):
         self._has_busted = busted
     
-    def has_busted(self):
+    def has_busted(self) -> bool:
         return self._has_busted
     
-    def print_hand(self):
+    def print_hand(self) -> str:
         hand = ""
         for card in self.list:
             hand += f"{card}, "
