@@ -35,6 +35,7 @@ class Card:
             self.color = Colors.BLACK
         self._value = rank
         self._is_flipped: bool = False
+        self._image_path = ""
     
     def get_suit(self):
         return self.suit
@@ -47,6 +48,12 @@ class Card:
     
     def get_color(self):
         return self.color
+    
+    def get_image_path(self):
+        return self._image_path
+    
+    def set_image_path(self, path):
+        self._image_path = path
     
     def set_value(self, value):
         self._value = value

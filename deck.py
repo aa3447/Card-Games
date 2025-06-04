@@ -1,5 +1,4 @@
 from card import Card, Suits, Ranks
-from enum import Enum
 from random import shuffle
 
 class Deck:
@@ -7,7 +6,9 @@ class Deck:
         self.cards: list[Card] = []
         for suit in Suits:
             for rank in custom_ranks:
-                self.cards.append(Card(suit, rank))
+                temp_card = Card(suit, rank)
+                temp_card.set_image_path(f"CardPNGS/{rank.name.lower()}_of_{suit.name.lower()}.png")
+                self.cards.append(temp_card)
 
     def deal(self) -> Card:
         if len(self.cards) == 0:
