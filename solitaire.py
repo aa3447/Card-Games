@@ -179,7 +179,7 @@ class Solitaire:
     def _insert_into_foundation(self, card: Card, foundation: int) -> bool:
         if foundation < 0 or foundation > 3:
             print("Invalid foundation number")
-            return
+            return False
         
 
         if not self._foundation[foundation]:
@@ -201,7 +201,7 @@ class Solitaire:
     def _insert_multiple_into_foundation(self, cards: list[Card], foundation: int) -> bool:
         if foundation < 0 or foundation > 3:
             print("Invalid foundation number")
-            return
+            return False
 
         if not self._foundation[foundation]:
             if cards[0].get_rank().value == 1:
@@ -221,7 +221,7 @@ class Solitaire:
     def _insert_into_tableau(self, card: Card, column: int) -> bool:
         if column < 0 or column > 6:
             print("Invalid column number")
-            return
+            return False
 
         if not self._tableau[column]:
             if card.get_rank().value == 13:
@@ -242,7 +242,7 @@ class Solitaire:
     def _insert_multiple_into_tableau(self, cards: list[Card], column: int) -> bool:
         if column < 0 or column > 6:
             print("Invalid column number")
-            return
+            return False
 
         if not self._tableau[column]:
             if cards[0].get_rank().value == 13:

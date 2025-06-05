@@ -1,6 +1,5 @@
 from gameSelector import GameSelector
 from deck import Deck
-from card import Card
 import pygame
 
 def main():
@@ -16,9 +15,7 @@ def main():
    pygame.init()
 
    screen = pygame.display.set_mode((screen_width, screen_height))
-
-   card = pygame.image.load(card.get_image_path()).convert_alpha()
-   card = pygame.transform.scale(card, (screen_width/4, screen_height/4)) 
+   card_image = None
 
    while True:
       for event in pygame.event.get():
@@ -26,8 +23,15 @@ def main():
             pygame.quit()
             return
 
+         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_d:
+               card = deck.deal()
+               card_image = pygame.image.load(card.get_image_path()).convert_alpha()
+               card_image = pygame.transform.scale(card_image, (screen_width/4, screen_height/4)) 
+
       screen.fill((255, 255, 255))
-      screen.blit(card, (screen_width/2 - card.get_width()/2, screen_height/2 - card.get_height()/2))
+      if card_image:
+         screen.blit(card_image, (screen_width/2 - card_image.get_width()/2, screen_height/2 - card_image.get_height()/2))
 
       pygame.display.flip()
 

@@ -1,6 +1,7 @@
 from deck import Deck
 from enum import Enum
 from genericPlayer import Player
+from card import Card
 
 class Ranks(Enum):
     TWO = 2
@@ -63,6 +64,10 @@ class War:
                     case 2:
                         card1 = self._play_card(self._see_text,player1)
                         card2 = self._play_card(self._see_text,player2)
+                    case _:
+                        print("Invalid number of players. Defaulting to 1 player.")
+                        card1 = self._play_card(self._see_text,player1)
+                        card2 = self._play_card(self._see_text,player2, user = False)
             else:
                 card1 = self._play_card(self._see_text,player1, user = False)
                 card2 = self._play_card(self._see_text,player2, user = False)
@@ -122,7 +127,7 @@ class War:
     
     # This function plays the next card for the player
     # If user is True, it will ask for user input to continue
-    def _play_card(self, see_text, player, user = True):
+    def _play_card(self, see_text, player, user = True)  -> Card:
         if user:
             player_input = input(f"play next card {player.name}? (press enter to continue. type 'exit' or 'e' to quit) ")
         
