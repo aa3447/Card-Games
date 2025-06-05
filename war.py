@@ -2,6 +2,7 @@ from deck import Deck
 from enum import Enum
 from genericPlayer import Player
 from card import Card
+import pygame
 
 class Ranks(Enum):
     TWO = 2
@@ -19,14 +20,23 @@ class Ranks(Enum):
     ACE = 14
 
 class War:
-    def __init__(self, war_face_down_cards = 1, see_text = True, user_input = False):
+    def __init__(self, war_face_down_cards = 1, see_text = True, user_input = False, see_graphics = False,  screen = None):
         self._deck = Deck(custom_ranks=Ranks)
         self._deck.shuffle()
         self._tie_stack = []
         self._round_count = 0
         self._war_face_down_cards = war_face_down_cards
         self._see_text = see_text
+        self._see_graphics = see_graphics
         self._user_input = user_input
+        
+        if see_graphics and screen is None:
+            print("No screen provided. Initializing default pygame screen.")
+            pygame.init()
+            self._screen = pygame.display.set_mode((800, 600))
+        elif see_graphics and screen is not None:
+            pygame.init()
+            self._screen = screen
         
     # This function plays the game of War
     # war_face_down_cards is the number of cards to play face down in a tie
@@ -55,28 +65,33 @@ class War:
             
         while player1.get_list_size() > 0 and player2.get_list_size() > 0:
             self._round_count += 1
+
+            if self._see_graphics:
+                self._screen.fill((255, 255, 255))
+
             if self._user_input:
                 match player_amount:
                     case 1:
-                        card1 = self._play_card(self._see_text,player1)
-                        card2 = self._play_card(self._see_text,player2, user = False)
+                        card1 = self._play_card(player1)
+                        card2 = self._play_card(player2, user = False)
                     
                     case 2:
-                        card1 = self._play_card(self._see_text,player1)
-                        card2 = self._play_card(self._see_text,player2)
+                        card1 = self._play_card(player1)
+                        card2 = self._play_card(player2)
                     case _:
                         print("Invalid number of players. Defaulting to 1 player.")
-                        card1 = self._play_card(self._see_text,player1)
-                        card2 = self._play_card(self._see_text,player2, user = False)
+                        card1 = self._play_card(player1)
+                        card2 = self._play_card(player2, user = False)
             else:
-                card1 = self._play_card(self._see_text,player1, user = False)
-                card2 = self._play_card(self._see_text,player2, user = False)
+                card1 = self._play_card(player1, user = False)
+                card2 = self._play_card(player2, user = False)
+            
 
             if card1.get_rank().value > card2.get_rank().value:
-                self._player_wins_stack(self._see_text, player1, card1, card2)
+                self._player_wins_stack(player1, card1, card2)
             
             elif card1.get_rank().value < card2.get_rank().value:
-                self._player_wins_stack(self._see_text, player2, card1, card2)
+                self._player_wins_stack(player2, card1, card2)
             
             else:
                 if player1.get_list_size() <= self._war_face_down_cards:
@@ -105,53 +120,77 @@ class War:
                 case 0:
                     player1_name = "Computer1"
                     player2_name = "Computer2"
-                    player1 = Player(player1_name)
-                    player2 = Player(player2_name)
+                    player1 = Player(player1_name, player_number=1)
+                    player2 = Player(player2_name, player_number=2)
                 case 1:
                     player1_name = input("Enter player 1 name: ")
                     player2_name = "Computer"
-                    player1 = Player(player1_name)
-                    player2 = Player(player2_name)
+                    player1 = Player(player1_name, player_number=1)
+                    player2 = Player(player2_name, player_number=2)
                 case 2:
                     player1_name = input("Enter player 1 name: ")
                     player2_name = input("Enter player 2 name: ")
-                    player1 = Player(player1_name)
-                    player2 = Player(player2_name)
+                    player1 = Player(player1_name, player_number=1)
+                    player2 = Player(player2_name, player_number=2)
                 case _:
                     print("Invalid number of players. Defaulting to 1 player.")
                     player1_name = input("Enter player 1 name: ")
                     player2_name = "Computer"
-                    player1 = Player(player1_name)
-                    player2 = Player(player2_name)
+                    player1 = Player(player1_name, player_number=1)
+                    player2 = Player(player2_name, player_number=2)
         return player1, player2
     
     # This function plays the next card for the player
     # If user is True, it will ask for user input to continue
-    def _play_card(self, see_text, player, user = True)  -> Card:
+    def _play_card(self, player: Player, user = True)  -> Card:
         if user:
-            player_input = input(f"play next card {player.name}? (press enter to continue. type 'exit' or 'e' to quit) ")
-        
-            if player_input.lower() == "exit" or player_input.lower() == "e":
-                 print(f"{player.name} quit the game after {self._round_count} rounds!")
-                 quit()
+            if self._see_graphics:
+                print(f"play next card {player.name}? (press enter to continue.)")
+                loop = True
+                while loop:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            print(f"{player.name} quit the game after {self._round_count} rounds!")
+                            quit()
+                        elif event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_KP_ENTER or event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                                loop = False
+            else:
+                player_input = input(f"play next card {player.name}? (press enter to continue. type 'exit' or 'e' to quit) ")
+                if player_input.lower() == "exit" or player_input.lower() == "e":
+                    print(f"{player.name} quit the game after {self._round_count} rounds!")
+                    quit()
                         
         card = player.list.pop()
                         
-        if see_text:
+        if self._see_text:
             print(f"{player.name} plays {card.rank.name} of {card.suit.name}")
+            
+            if self._see_graphics:
+                screen_width, screen_height = pygame.display.get_surface().get_size()
+                card_image = pygame.image.load(card.get_image_path()).convert_alpha()
+                card_image = pygame.transform.scale(card_image, (screen_width/4, screen_height/4)) 
+                
+                if card_image:
+                    if player.get_player_number() == 1:
+                        self._screen.blit(card_image, (screen_width/2 - card_image.get_width()/2, screen_height - card_image.get_height()))
+                    else:
+                        self._screen.blit(card_image, (screen_width/2 - card_image.get_width()/2, 0)) 
+
+                pygame.display.flip()  
         
         return card
      
     # This function handles the winning player and adds the cards to their stack
-    def _player_wins_stack(self, see_text, player, card1, card2):
-        if see_text:
+    def _player_wins_stack(self, player, card1, card2):
+        if self._see_text:
             print(f"{player.name} wins this round")
         
         player.list.insert(0, card1)
         player.list.insert(0, card2)
         
         if len(self._tie_stack) > 0:
-            if see_text:
+            if self._see_text:
                 print(f"and {player.name} wins the WAR! The stack of {len(self._tie_stack)} cards is yours!!")
             for card in self._tie_stack:
                 player.list.insert(0, card)

@@ -3,7 +3,8 @@ from blackjack import BlackJack
 from solitaire import Solitaire
 
 class GameSelector:
-    def __init__(self):
+    def __init__(self, user_screen=None):
+        self.user_screen = user_screen
         self._games = {
             "War": War,
             "Blackjack": BlackJack,
@@ -80,7 +81,7 @@ class GameSelector:
                 else:
                     user_input_bool = False
                     
-                return War(war_face_down_cards = w_face_down_cards , see_text = see_text_bool , user_input = user_input_bool)
+                return War(war_face_down_cards = w_face_down_cards , see_text = see_text_bool , user_input = user_input_bool, see_graphics = True, screen = self.user_screen)
             
             case "Blackjack":
                 if use_default == 1:
