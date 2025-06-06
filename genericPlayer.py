@@ -21,9 +21,6 @@ class Player:
 
     def has_cards(self) -> bool:
         return len(self.list) > 0
-
-    def get_list_size(self) -> int:
-        return len(self.list)
     
     def set_chips(self, chips):
         self._chips = chips
@@ -38,6 +35,9 @@ class Player:
         if bet > self._chips:
             raise ValueError("Bet exceeds available chips.")
         self._bet = bet
+
+    def get_list_size(self) -> int:
+        return len(self.list)
     
     def get_bet(self):
         return self._bet

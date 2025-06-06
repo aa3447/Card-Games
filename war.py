@@ -30,13 +30,16 @@ class War:
         self._see_graphics = see_graphics
         self._user_input = user_input
         
-        if see_graphics and screen is None:
-            print("No screen provided. Initializing default pygame screen.")
+        if see_graphics:
             pygame.init()
-            self._screen = pygame.display.set_mode((800, 600))
-        elif see_graphics and screen is not None:
-            pygame.init()
-            self._screen = screen
+            self._font = pygame.font.SysFont(None, 24)
+            self._screen_width, self._screen_height = pygame.display.get_surface().get_size()
+            if screen is None:
+                print("No screen provided. Initializing default pygame screen.")
+                self._screen = pygame.display.set_mode((800, 600))
+            else:
+                self._screen = screen
+            
         
     # This function plays the game of War
     # war_face_down_cards is the number of cards to play face down in a tie
@@ -68,6 +71,23 @@ class War:
 
             if self._see_graphics:
                 self._screen.fill((255, 255, 255))
+                
+                player1_name_text = self._font.render(player1.name, True, (0, 0, 0))
+                player1_deck_size_text = self._font.render(f"Deck size: {player1.get_list_size()}", True, (0, 0, 0))
+                
+                player2_name_text = self._font.render(player2.name, True, (0, 0, 0))
+                player2_deck_size_text = self._font.render(f"Deck size: {player2.get_list_size()}", True, (0, 0, 0))
+                
+                player1_name_rect = player1_name_text.get_rect(center=(player1_deck_size_text.get_width(), self._screen_height - player1_name_text.get_height()))
+                player1_deck_size_rect = player1_deck_size_text.get_rect(center=(player1_deck_size_text.get_width(), self._screen_height - player1_name_text.get_height() - player1_deck_size_text.get_height() - 20))
+
+                player2_name_rect = player2_name_text.get_rect(center=(self._screen_width - player2_deck_size_text.get_width(), player2_name_text.get_height()))
+                player2_deck_size_rect = player2_deck_size_text.get_rect(center=(self._screen_width - player2_deck_size_text.get_width(), player2_name_text.get_height() + player2_deck_size_text.get_height() + 20))
+
+                self._screen.blit(player1_name_text, player1_name_rect)
+                self._screen.blit(player1_deck_size_text, player1_deck_size_rect)
+                self._screen.blit(player2_name_text, player2_name_rect)
+                self._screen.blit(player2_deck_size_text, player2_deck_size_rect)
 
             if self._user_input:
                 match player_amount:
@@ -176,7 +196,7 @@ class War:
                         self._screen.blit(card_image, (screen_width/2 - card_image.get_width()/2, screen_height - card_image.get_height()))
                     else:
                         self._screen.blit(card_image, (screen_width/2 - card_image.get_width()/2, 0)) 
-
+                
                 pygame.display.flip()  
         
         return card
