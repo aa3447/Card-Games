@@ -80,8 +80,24 @@ class GameSelector:
                     user_input_bool = True
                 else:
                     user_input_bool = False
+
+                while True:
+                    try:
+                        see_graphics_input= int(input("See graphics? (1 for yes, 0 for no) (Default is no): "))
+                    except TypeError:
+                        print("Invalid input. Please enter 1 or 0.")
+                    else:
+                        if see_graphics_input not in [0, 1]:
+                            print("Invalid input. Please enter 1 or 0.")
+                        else:
+                            break
+                
+                if see_graphics_input == 1:
+                    see_graphics_bool = True
+                else:
+                    see_graphics_bool = False
                     
-                return War(war_face_down_cards = w_face_down_cards , see_text = see_text_bool , user_input = user_input_bool, see_graphics = True, screen = self.user_screen)
+                return War(war_face_down_cards = w_face_down_cards , see_text = see_text_bool , user_input = user_input_bool, see_graphics = see_graphics_bool, screen = self.user_screen)
             
             case "Blackjack":
                 if use_default == 1:

@@ -121,6 +121,12 @@ class War:
                 
                 if self._see_text:
                     print("It's a tie! WAR!")
+                if self._see_graphics:
+                    war_text = self._font.render("It's a tie! WAR!", True, (0, 0, 0))
+                    war_text_rect = war_text.get_rect(center=(self._screen_width / 2, self._screen_height / 2 - 30))
+                    self._screen.blit(war_text, war_text_rect)
+                    pygame.display.flip()
+                
                 self._tie_stack.append(card1)
                 self._tie_stack.append(card2)
                 
@@ -205,13 +211,24 @@ class War:
     def _player_wins_stack(self, player, card1, card2):
         if self._see_text:
             print(f"{player.name} wins this round")
-        
+        if self._see_graphics:
+            win_text = self._font.render(f"{player.name} wins this round", True, (0, 0, 0))
+            win_text_rect = win_text.get_rect(center=(self._screen_width / 2, self._screen_height / 2))
+            self._screen.blit(win_text, win_text_rect)
+            pygame.display.flip() 
+      
         player.list.insert(0, card1)
         player.list.insert(0, card2)
         
         if len(self._tie_stack) > 0:
             if self._see_text:
                 print(f"and {player.name} wins the WAR! The stack of {len(self._tie_stack)} cards is yours!!")
+            if self._see_graphics:
+                war_text = self._font.render(f"and {player.name} wins the WAR! The stack of {len(self._tie_stack)} cards is yours!!", True, (0, 0, 0))
+                war_text_rect = war_text.get_rect(center=(self._screen_width / 2, self._screen_height / 2 + 30))
+                self._screen.blit(war_text, war_text_rect)
+                pygame.display.flip()
+            
             for card in self._tie_stack:
                 player.list.insert(0, card)
             self._tie_stack.clear()
