@@ -115,9 +115,23 @@ class War:
             
             else:
                 if player1.get_list_size() <= self._war_face_down_cards:
-                    return f"{player1.name} dose not have enough cards for WAR! {player2.name} wins the game after {self._round_count} rounds!!"
+                    if self._see_text:
+                        print(f"{player1.name} dose not have enough cards for WAR! {player2.name} wins the game after {self._round_count} rounds!!")
+                    if self._see_graphics:
+                        war_text = self._font.render(f"{player1.name} dose not have enough cards for WAR! {player2.name} wins the game after {self._round_count} rounds!!", True, (0, 0, 0))
+                        war_text_rect = war_text.get_rect(center=(self._screen_width / 2, self._screen_height / 2 - 30))
+                        self._screen.blit(war_text, war_text_rect)
+                        pygame.display.flip()
+                    quit()
                 elif player2.get_list_size() <= self._war_face_down_cards:
-                    return f"{player2.name} dose not have enough cards for WAR! {player1.name} wins the game after {self._round_count} rounds!!"
+                    if self._see_text:
+                        print(f"{player2.name} dose not have enough cards for WAR! {player1.name} wins the game after {self._round_count} rounds!!")
+                    if self._see_graphics:
+                        war_text = self._font.render(f"{player2.name} dose not have enough cards for WAR! {player1.name} wins the game after {self._round_count} rounds!!", True, (0, 0, 0))
+                        war_text_rect = war_text.get_rect(center=(self._screen_width / 2, self._screen_height / 2 - 30))
+                        self._screen.blit(war_text, war_text_rect)
+                        pygame.display.flip()
+                    quit()
                 
                 if self._see_text:
                     print("It's a tie! WAR!")
@@ -135,10 +149,23 @@ class War:
                     self._tie_stack.append(player2.list.pop())
         
         if player1.get_list_size() == 0:
-            print(f"{player1.name} is out of cards! {player2.name} wins the game after {self._round_count} rounds!")
+            if self._see_text:
+                print(f"{player1.name} is out of cards! {player2.name} wins the game after {self._round_count} rounds!")
+            if self._see_graphics:
+                game_over_text = self._font.render(f"{player1.name} is out of cards! {player2.name} wins the game after {self._round_count} rounds!", True, (0, 0, 0))
+                game_over_text_rect = game_over_text.get_rect(center=(self._screen_width / 2, self._screen_height / 2))
+                self._screen.blit(game_over_text, game_over_text_rect)
+                pygame.display.flip()
         else:
-            print(f"{player2.name} is out of cards! {player1.name} wins the game after {self._round_count} rounds!")
+            if self._see_text:
+                print(f"{player2.name} is out of cards! {player1.name} wins the game after {self._round_count} rounds!")
+            if self._see_graphics:
+                game_over_text = self._font.render(f"{player2.name} is out of cards! {player1.name} wins the game after {self._round_count} rounds!", True, (0, 0, 0))
+                game_over_text_rect = game_over_text.get_rect(center=(self._screen_width / 2, self._screen_height / 2))
+                self._screen.blit(game_over_text, game_over_text_rect)
+                pygame.display.flip()
         
+        quit()
     # This function sets the player names based on the number of players
     # 0 is 2 computer players
     def _set_player_names(self, player_amount):
@@ -193,15 +220,14 @@ class War:
             print(f"{player.name} plays {card.rank.name} of {card.suit.name}")
             
             if self._see_graphics:
-                screen_width, screen_height = pygame.display.get_surface().get_size()
                 card_image = pygame.image.load(card.get_image_path()).convert_alpha()
-                card_image = pygame.transform.scale(card_image, (screen_width/4, screen_height/4)) 
+                card_image = pygame.transform.scale(card_image, (self._screen_width/4, self._screen_height/4)) 
                 
                 if card_image:
                     if player.get_player_number() == 1:
-                        self._screen.blit(card_image, (screen_width/2 - card_image.get_width()/2, screen_height - card_image.get_height()))
+                        self._screen.blit(card_image, (self._screen_width/2 - card_image.get_width()/2, self._screen_height - card_image.get_height()))
                     else:
-                        self._screen.blit(card_image, (screen_width/2 - card_image.get_width()/2, 0)) 
+                        self._screen.blit(card_image, (self._screen_width/2 - card_image.get_width()/2, 0)) 
                 
                 pygame.display.flip()  
         
