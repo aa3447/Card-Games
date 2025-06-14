@@ -36,7 +36,7 @@ class BlackJack:
             player_input = input(f"Do you want to quit? (press enter to continue. type 'exit' or 'e' to quit) ")
         
             if player_input.lower() == "exit" or player_input.lower() == "e":
-                 print(f"{player.name} has quit the game.")
+                 print(f"players have quit the game.")
                  quit()
 
             # Resetting game state
@@ -66,7 +66,7 @@ class BlackJack:
                             break
             
             # Dealing initial cards
-            print("Dealing intial cards")
+            print("Dealing initial cards")
             for x in range(player_amount):
                 players[x].add_cards(self._deck.multi_deal(2))
             
@@ -85,19 +85,19 @@ class BlackJack:
                 if self._score_hand(dealer)[0] == 21:
                     print(f"Dealer has blackjack! {dealer.name} wins!")
                     for x in range(player_amount):
-                        currrent_player = players[x]
+                        current_player = players[x]
                         if initial_player_scores[x] != 21:
-                            currrent_player.set_chips(currrent_player.get_chips() - currrent_player.get_bet())
-                            print(f"{currrent_player.name} has {currrent_player.get_chips()} chips left.")
+                            current_player.set_chips(current_player.get_chips() - current_player.get_bet())
+                            print(f"{current_player.name} has {current_player.get_chips()} chips left.")
                     self._dealer_blackjack = True
 
             if not self._dealer_blackjack:
                 for x in range(player_amount):
-                    currrent_player = players[x]
+                    current_player = players[x]
                     if initial_player_scores[x] == 21:
-                        print(f"{currrent_player.name} has blackjack! {currrent_player.name} wins!")
-                        currrent_player.set_chips(currrent_player.get_chips() + floor((currrent_player.get_bet() * 1.5)))
-                        print(f"{currrent_player.name} has {currrent_player.get_chips()} chips left.")
+                        print(f"{current_player.name} has blackjack! {current_player.name} wins!")
+                        current_player.set_chips(current_player.get_chips() + floor((current_player.get_bet() * 1.5)))
+                        print(f"{current_player.name} has {current_player.get_chips()} chips left.")
                         if not self._player_blackjack:
                             self._player_blackjack = True
                 
@@ -114,12 +114,13 @@ class BlackJack:
                             print(f"{player.name}'s hand is {player.print_hand()}")
                             try:
                                 if turn_count == 0:
-                                    action = input(f"{player.name}, do you want to hit (h), stand (s), double down (d), surrender (g), or show dealers hand (t)?").lower()
+                                    action = input(f"{player.name}, do you want to hit (h), stand (s), double down (d), surrender (g), or show dealer's hand (t)?").lower()
                                 else:
                                     action = input(f"{player.name}, do you want to hit (h), stand (s), or show dealers hand (t)?").lower()
                             except TypeError:
                                 print("Invalid input. Please enter 'h' or 's'.")
                             turn_count += 1
+                            
                             if action == 'h':
                                 player.add_card(self._deck.deal())
                                 print(f"{player.name} hits and gets {player.get_cards()[-1]}")
@@ -204,19 +205,19 @@ class BlackJack:
                     if not self._dealer_bust:
                         dealer_score = self._score_hand(dealer)
                         for x in range(player_amount):
-                            currrent_player = players[x]
-                            player_score = self._score_hand(currrent_player)[0]
-                            if currrent_player.has_busted():
-                                currrent_player.set_busted(False)
-                                print(f"{currrent_player.name} busted! {dealer.name} wins!")
+                            current_player = players[x]
+                            player_score = self._score_hand(current_player)[0]
+                            if current_player.has_busted():
+                                current_player.set_busted(False)
+                                print(f"{current_player.name} busted! {dealer.name} wins!")
                             elif player_score > dealer_score[0]:
-                                print(f"{currrent_player.name} wins!")
-                                currrent_player.set_chips(currrent_player.get_chips() + currrent_player.get_bet())
+                                print(f"{current_player.name} wins!")
+                                current_player.set_chips(current_player.get_chips() + current_player.get_bet())
                             elif player_score < dealer_score[0]:
-                                print(f"{currrent_player.name} loses!")
-                                currrent_player.set_chips(currrent_player.get_chips() - currrent_player.get_bet())
+                                print(f"{current_player.name} loses!")
+                                current_player.set_chips(current_player.get_chips() - current_player.get_bet())
                             else:
-                                print(f"{currrent_player.name} ties with the dealer!")
+                                print(f"{current_player.name} ties with the dealer!")
     
     # This function sets up the players for the game.
     # It returns a list of Player objects with the Dealer being the last player

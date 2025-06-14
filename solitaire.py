@@ -197,7 +197,7 @@ class Solitaire:
                 return False
         return True
     
-    # Assumses cards are in the correct order
+    # Assumes cards are in the correct order
     def _insert_multiple_into_foundation(self, cards: list[Card], foundation: int) -> bool:
         if foundation < 0 or foundation > 3:
             print("Invalid foundation number")
@@ -238,7 +238,7 @@ class Solitaire:
                 return False
         return True
     
-    # Assumses cards are in the correct order
+    # Assumes cards are in the correct order
     def _insert_multiple_into_tableau(self, cards: list[Card], column: int) -> bool:
         if column < 0 or column > 6:
             print("Invalid column number")
@@ -281,7 +281,7 @@ class Solitaire:
             return
 
         cards = ""
-        print("Cards in colomun from top to bottom")
+        print("Cards in column from top to bottom")
         for card in self._tableau[column_index]:
             if card.is_flipped():
                 cards += str(card) + " " + str(card.get_color().name) + " "
@@ -290,14 +290,14 @@ class Solitaire:
     def _show_column(self, column: list[Card], index: int = 0):
 
         cards = ""
-        print(f"Cards in colomun {index} from top to bottom")
+        print(f"Cards in column {index} from top to bottom")
         for card in column:
             if card.is_flipped():
                 cards += str(card) + " " + str(card.get_color().name) + " "
         print(cards)
     
     def _show_columns(self):
-        print("Colomun from left to right")
+        print("Column from left to right")
         index:int = 0
         for column in self._tableau:
             if column:
